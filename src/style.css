@@ -1,0 +1,5 @@
+#app { font-family: sans-serif; max-width: 1000px; margin: auto; }
+.article { display: flex; gap: 20px; flex-wrap: wrap; padding: 20px; }
+.carte { border: 1px solid #ddd; padding: 15px; border-radius: 10px; width: 250px; }
+.btn-order { background-color: #27ae60; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+.sold-out { color: #e74c3c; font-weight: bold; }
