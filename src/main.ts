@@ -19,7 +19,7 @@ function structureArticles(article: Article): string {
   return `
     <div class="carte">
       <section class="article">
-        <h2>${article.nom}</h2>
+        <h3>${article.nom}</h3>
         <p>${article.description}</p>
         <p><strong>${article.prix}€</strong></p>
       </section>
