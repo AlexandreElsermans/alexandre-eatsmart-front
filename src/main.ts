@@ -7,10 +7,10 @@ interface Article {
   description: string;
 }
 
-let appDiv = document.querySelector<HTMLDivElement>("#app");
+let appDiv = document.querySelector<HTMLDivElement>("#app"); // Sélection de la div avec l'id "app"
 
 async function chargerArticles(): Promise<Article[]> {
-  const response = await fetch("http://alexandre-api-eatsmart/articles");
+  const response = await fetch("http://alexandre-api-eatsmart/articles"); // Appel de l'API pour récupérer les articles
   return await response.json();
 }
 
@@ -27,6 +27,6 @@ function structureArticles(article: Article): string {
 }
 
 if (appDiv) {
-  const carte = await chargerArticles();
+  const carte = await chargerArticles(); // Récupération des articles depuis l'API
   appDiv.innerHTML = carte.map(p => structureArticles(p)).join("");
 }
