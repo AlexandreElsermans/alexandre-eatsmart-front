@@ -7,13 +7,12 @@ interface Article {
   description: string;
 }
 
-const carte: Article[] = [
-  {id:1,nom:"Anchois 23cm",prix:7.9,description:"sauce tomate premium, origan, huile d'olive extra vierge, anchois, olive"},
-  {id:2,nom:"Anchois 33cm",prix:11.9,description:"sauce tomate premium, origan, huile d'olive extra vierge, anchois, olive"},
-  {id:3,nom:"Emmental 23cm",prix:7.9,description:"sauce tomate premium, origan, huile d'olive extra vierge, emmental, basilic, olive"},
-]
-
 let appDiv = document.querySelector<HTMLDivElement>("#app");
+
+async function chargerArticles(): Promise<Article[]> {
+  const response = await fetch("http://alexandre-api-eatsmart/articles");
+  return await response.json();
+}
 
 function structureArticles(article: Article): string {
   return `
@@ -28,5 +27,6 @@ function structureArticles(article: Article): string {
 }
 
 if (appDiv) {
+  const carte = await chargerArticles();
   appDiv.innerHTML = carte.map(p => structureArticles(p)).join("");
 }
