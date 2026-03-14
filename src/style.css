@@ -1,6 +1,56 @@
-#app { font-family: sans-serif; max-width: 1000px; margin: auto; }
-header { text-align: center; padding: 20px; margin: 12px; } 
-.menu-container { display: flex; gap: 20px; flex-wrap: wrap; padding: 20px; }
-.carte { display: inline-block; border: 1px solid #ddd; padding: 15px; margin: 10px; border-radius: 10px; width: 250px; }
-.btn-order { background-color: #27ae60; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
-.sold-out { color: #e74c3c; font-weight: bold; }
+#app { 
+    font-family: sans-serif;
+    max-width: 1000px;
+    margin: auto; 
+}
+
+.menu-container {
+    display: flex;
+    gap: 20px; 
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.carte {
+    display: inline-block;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 10px;
+    width: 250px;
+}
+
+.btn-order {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sold-out {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.main-header {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 10px 20px;
+  height: 80px;
+}
+
+.logo-img {
+  height: 90px;
+  width: auto;
+}
+
+.eatsmart-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+}
