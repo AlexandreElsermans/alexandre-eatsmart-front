@@ -21,7 +21,7 @@ async function chargerArticles(): Promise<Article[]> {
 }
 
 async function chargerCategories(): Promise<Categorie[]> {
-  const response = await fetch('http://alexandre-api-eatsmart/categories');
+  const response = await fetch('http://alexandre-api-eatsmart/categories'); // Appel de l'API pour récupérer les catégories
   return await response.json();
 }
 
@@ -41,6 +41,7 @@ function structureArticles(article: Article): string {
         <h3>${article.nom}</h3>
         <p>${article.description}</p>
         <p><strong>${article.prix}€</strong></p>
+        <buton class="btn-order">Ajouter</buton>
       </section>
     </div>
   `
@@ -49,14 +50,14 @@ function structureArticles(article: Article): string {
 if (appDiv) {
   const carte = await chargerArticles(); // Récupération des articles depuis l'API
   const page = await chargerCategories(); // Récupération des catégories depuis l'API
-  appDiv.innerHTML = page.map(page => structurePages(page)).join("");
+  appDiv.innerHTML = page.map(page => structurePages(page)).join(""); // Construction de la structure HTML pour les catégories et insertion dans la div "app"
 
   carte.forEach(c => {
-      const categorieArticleID = document.querySelector(`#cat_${c.id_categorie} .articles`);
+      const categorieArticleID = document.querySelector(`#cat_${c.id_categorie} .articles`); // Sélection de la div "articles" correspondant à la catégorie de l'article
       if (categorieArticleID) {
         categorieArticleID.innerHTML += structureArticles(c);
       } else {
-        console.error(`La catégorie avec l'id ${c.id_categorie} n'existe pas.`);
+        console.error(`La catégorie avec l'id ${c.id_categorie} n'existe pas.`); // Gestion des erreurs si la catégorie n'existe pas
       }
     });
 }
