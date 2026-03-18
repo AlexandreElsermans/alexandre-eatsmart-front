@@ -61,6 +61,20 @@ if (appDiv) {
         console.error(`La catégorie avec l'id ${c.id_categorie} n'existe pas.`); // Gestion des erreurs si la catégorie n'existe pas
       }
     });
+
+  appDiv.innerHTML += `
+    <aside class="cart-container">
+        <h2>Votre Panier</h2>
+        <div id="cart-items">
+          <p>Votre panier est vide</p>
+        </div>
+        <hr>
+        <div class="cart-total">
+          <strong>Total : <span id="total-prix">0.00</span>€</strong>
+        </div>
+    </aside>
+    </div>
+  `
 }
 
 
