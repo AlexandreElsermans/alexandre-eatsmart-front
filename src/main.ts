@@ -47,9 +47,10 @@ function structureArticles(article: Article): string {
   `
 }
 
+
+const carte = await chargerArticles(); // Récupération des articles depuis l'API
+const page = await chargerCategories(); // Récupération des catégories depuis l'API
 if (appDiv) {
-  const carte = await chargerArticles(); // Récupération des articles depuis l'API
-  const page = await chargerCategories(); // Récupération des catégories depuis l'API
   appDiv.innerHTML = page.map(page => structurePages(page)).join(""); // Construction de la structure HTML pour les catégories et insertion dans la div "app"
 
   carte.forEach(c => {
@@ -61,3 +62,12 @@ if (appDiv) {
       }
     });
 }
+
+
+const allButton = document.querySelectorAll<HTMLButtonElement>(".btn-order");
+allButton.forEach((btn, index) => {
+  btn.addEventListener('click', () => {
+    const plat = carte[index];
+    console.log("Bouton n°",index," cliqué ! Plat : ", plat.nom);
+  })
+})
