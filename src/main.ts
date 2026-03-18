@@ -15,11 +15,6 @@ interface Categorie {
 
 let appDiv = document.querySelector<HTMLDivElement>("#app"); // Sélection de la div avec l'id "content-wrapper"
 
-async function chargerMessageDuJour(): Promise<[]> {
-  const response = await fetch('https://jsonplaceholder.typicode.com/todos/1');
-  return await response.json();
-} 
-
 async function chargerArticles(): Promise<Article[]> {
   const response = await fetch('http://alexandre-api-eatsmart/articles'); // Appel de l'API pour récupérer les articles
   return await response.json();
@@ -65,7 +60,7 @@ function structureArticles(article: Article): string {
   `
 }
 
-function structurePanier(): string {
+function structurePanier(prix: number = 0): string {
   return `
     <aside class="cart-container">
         <h2>Votre Panier</h2>
@@ -74,14 +69,13 @@ function structurePanier(): string {
         </div>
         <hr>
         <div class="cart-total">
-          <strong>Total : <span id="total-prix">0.00</span>€</strong>
+          <strong>Total : <span id="total-prix">${prix}</span>€</strong>
         </div>
     </aside>
     </div>
   `
 } 
 
-const message = await chargerMessageDuJour();
 const carte = await chargerArticles(); // Récupération des articles depuis l'API
 const page = await chargerCategories(); // Récupération des catégories depuis l'API
 
@@ -91,8 +85,6 @@ if (appDiv) {
         <img src="public/logo_eatsmart.jpg" alt="EatSmart logo" class="logo-img">
         <h1 class="eatsmart-title">EatSmart - Carte du restaurant (${carte.length} plats)</h1>
     </header>
-    <br>
-    <p>Message du jour : ${message.title}</p>
 
     <div class="content-wrapper">
       <div class="menu-container">
@@ -115,6 +107,8 @@ if (appDiv) {
 
 const allButton = document.querySelectorAll<HTMLButtonElement>(".btn-order");
 const cartItem = document.querySelector<HTMLDivElement>('#cart-items p');
+const cartTotal = document.querySelector("#total-prix");
+
 let panier: Article[] = [];
 
 allButton.forEach((btn, index) => {
@@ -125,5 +119,6 @@ allButton.forEach((btn, index) => {
     const plat = carte[index];
     panier.push(plat);
     cartItem.innerHTML += `<p><strong>${plat.nom}</strong> ${plat.prix}€</p>`;
+    cartTotal.innerHTML = (parseFloat(cartTotal.innerHTML) + parseFloat(plat.prix)).toString();
   })
 });
