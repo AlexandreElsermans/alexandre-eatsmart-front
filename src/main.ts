@@ -65,9 +65,12 @@ if (appDiv) {
 
 
 const allButton = document.querySelectorAll<HTMLButtonElement>(".btn-order");
+let panier: Article[] = [];
 allButton.forEach((btn, index) => {
   btn.addEventListener('click', () => {
     const plat = carte[index];
     console.log("Bouton n°",index," cliqué ! Plat : ", plat.nom);
+    panier.push(plat);
+    console.log("Panier = ", panier);
   })
 })
