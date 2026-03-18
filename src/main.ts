@@ -79,21 +79,22 @@ function structurePanier(prix: number = 0): string {
 const carte = await chargerArticles(); // Récupération des articles depuis l'API
 const page = await chargerCategories(); // Récupération des catégories depuis l'API
 
-if (appDiv) {
+if (appDiv) { // Mise en place du header
   appDiv.innerHTML = `
     <header class="main-header">
         <img src="public/logo_eatsmart.jpg" alt="EatSmart logo" class="logo-img">
-        <h1 class="eatsmart-title">EatSmart - Carte du restaurant (${carte.length} plats)</h1>
+        <h1 class="eatsmart-title">EatSmart - Carte du restaurant</h1>
     </header>
 
     <div class="content-wrapper">
       <div class="menu-container">
-        ${page.map(p => structurePages(p)).join('')}
+        ${page.map(p => structurePages(p)).join('') /* Création des catégories */}
       </div>
+      ${structurePanier() /* Création du panier vide */}
     </div>
   `;
 
-  carte.forEach(c => {
+  carte.forEach(c => { // Ajout des articles dans leur catégorie
       const categorieArticleID = document.querySelector(`#cat_${c.id_categorie} .articles`); // Sélection de la div "articles" correspondant à la catégorie de l'article
       if (categorieArticleID) {
         categorieArticleID.innerHTML += structureArticles(c);
@@ -101,24 +102,22 @@ if (appDiv) {
         console.error(`La catégorie avec l'id ${c.id_categorie} n'existe pas.`); // Gestion des erreurs si la catégorie n'existe pas
       }
     });
-
-  appDiv.innerHTML += structurePanier();
 }
 
-const allButton = document.querySelectorAll<HTMLButtonElement>(".btn-order");
-const cartItem = document.querySelector<HTMLDivElement>('#cart-items p');
-const cartTotal = document.querySelector("#total-prix");
+const allButton = document.querySelectorAll<HTMLButtonElement>(".btn-order"); // Recherche tous les boutons de la page avec la classe btn-order
+const cartItem = document.querySelector<HTMLDivElement>('#cart-items p'); // Recherche la balise paragraphe dans l'id cart-items
+const cartTotal = document.querySelector("#total-prix"); // Récupère la balise contenant le prix total
 
 let panier: Article[] = [];
 
 allButton.forEach((btn, index) => {
   btn.addEventListener('click', () => {
     if (cartItem?.innerHTML === "Votre panier est vide") {
-      cartItem.innerHTML = "";
+      cartItem.innerHTML = ""; // Au premier ajout, suppression du contenu de la balise <p>
     }
     const plat = carte[index];
     panier.push(plat);
-    cartItem.innerHTML += `<p><strong>${plat.nom}</strong> ${plat.prix}€</p>`;
-    cartTotal.innerHTML = (parseFloat(cartTotal.innerHTML) + parseFloat(plat.prix)).toString();
+    cartItem.innerHTML += `<p><strong>${plat.nom}</strong> ${plat.prix}€</p>`; // Affichage dynamique du contenu du panier
+    cartTotal.innerHTML = (parseFloat(cartTotal.innerHTML) + parseFloat(plat.prix)).toString(); // Mise à jour dynamique du prix total 
   })
 });
