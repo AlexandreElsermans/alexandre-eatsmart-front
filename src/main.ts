@@ -13,7 +13,12 @@ interface Categorie {
   nom: string;
 }
 
-let appDiv = document.querySelector<HTMLDivElement>("#app"); // Sélection de la div avec l'id "app"
+let appDiv = document.querySelector<HTMLDivElement>("#app"); // Sélection de la div avec l'id "content-wrapper"
+
+async function chargerMessageDuJour(): Promise<[]> {
+  const response = await fetch('https://jsonplaceholder.typicode.com/todos/1');
+  return await response.json();
+} 
 
 async function chargerArticles(): Promise<Article[]> {
   const response = await fetch('http://alexandre-api-eatsmart/articles'); // Appel de l'API pour récupérer les articles
@@ -35,34 +40,33 @@ function structurePages(categorie: Categorie): string {
 }
 
 function structureArticles(article: Article): string {
+  if (article.prix < 10) {
+    return `
+      <div class="carte">
+        <section class="article">
+          <h3>${article.nom}</h3>
+          <p>${article.description}</p>
+          <p><strong>${article.prix}€</strong></p>
+          <button class="btn-order">Ajouter</button>
+          <p><strong>🔥Bon plan</strong></p>
+        </section>
+      </div>
+    `
+  }
   return `
     <div class="carte">
       <section class="article">
         <h3>${article.nom}</h3>
         <p>${article.description}</p>
         <p><strong>${article.prix}€</strong></p>
-        <buton class="btn-order">Ajouter</buton>
+        <button class="btn-order">Ajouter</button>
       </section>
     </div>
   `
 }
 
-
-const carte = await chargerArticles(); // Récupération des articles depuis l'API
-const page = await chargerCategories(); // Récupération des catégories depuis l'API
-if (appDiv) {
-  appDiv.innerHTML = page.map(page => structurePages(page)).join(""); // Construction de la structure HTML pour les catégories et insertion dans la div "app"
-
-  carte.forEach(c => {
-      const categorieArticleID = document.querySelector(`#cat_${c.id_categorie} .articles`); // Sélection de la div "articles" correspondant à la catégorie de l'article
-      if (categorieArticleID) {
-        categorieArticleID.innerHTML += structureArticles(c);
-      } else {
-        console.error(`La catégorie avec l'id ${c.id_categorie} n'existe pas.`); // Gestion des erreurs si la catégorie n'existe pas
-      }
-    });
-
-  appDiv.innerHTML += `
+function structurePanier(): string {
+  return `
     <aside class="cart-container">
         <h2>Votre Panier</h2>
         <div id="cart-items">
@@ -75,16 +79,51 @@ if (appDiv) {
     </aside>
     </div>
   `
+} 
+
+const message = await chargerMessageDuJour();
+const carte = await chargerArticles(); // Récupération des articles depuis l'API
+const page = await chargerCategories(); // Récupération des catégories depuis l'API
+
+if (appDiv) {
+  appDiv.innerHTML = `
+    <header class="main-header">
+        <img src="public/logo_eatsmart.jpg" alt="EatSmart logo" class="logo-img">
+        <h1 class="eatsmart-title">EatSmart - Carte du restaurant (${carte.length} plats)</h1>
+    </header>
+    <br>
+    <p>Message du jour : ${message.title}</p>
+
+    <div class="content-wrapper">
+      <div class="menu-container">
+        ${page.map(p => structurePages(p)).join('')}
+      </div>
+    </div>
+  `;
+
+  carte.forEach(c => {
+      const categorieArticleID = document.querySelector(`#cat_${c.id_categorie} .articles`); // Sélection de la div "articles" correspondant à la catégorie de l'article
+      if (categorieArticleID) {
+        categorieArticleID.innerHTML += structureArticles(c);
+      } else {
+        console.error(`La catégorie avec l'id ${c.id_categorie} n'existe pas.`); // Gestion des erreurs si la catégorie n'existe pas
+      }
+    });
+
+  appDiv.innerHTML += structurePanier();
 }
 
-
 const allButton = document.querySelectorAll<HTMLButtonElement>(".btn-order");
+const cartItem = document.querySelector<HTMLDivElement>('#cart-items p');
 let panier: Article[] = [];
+
 allButton.forEach((btn, index) => {
   btn.addEventListener('click', () => {
+    if (cartItem?.innerHTML === "Votre panier est vide") {
+      cartItem.innerHTML = "";
+    }
     const plat = carte[index];
-    console.log("Bouton n°",index," cliqué ! Plat : ", plat.nom);
     panier.push(plat);
-    console.log("Panier = ", panier);
+    cartItem.innerHTML += `<p><strong>${plat.nom}</strong> ${plat.prix}€</p>`;
   })
-})
+});

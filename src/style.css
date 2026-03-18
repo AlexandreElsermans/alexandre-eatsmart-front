@@ -6,18 +6,24 @@
 
 .menu-container {
     display: flex;
-    gap: 20px; 
-    flex-wrap: wrap;
-    padding: 20px;
+    flex-direction: column;
+    gap: 20px;
+    flex: 3; /* Pour que le menu prenne 3/4 de l'espace */
 }
 
 .carte {
-    display: inline-block;
     border: 1px solid #ddd;
     padding: 15px;
-    margin: 10px;
     border-radius: 10px;
-    width: 250px;
+    width: 100%; /* Prend toute la largeur de la colonne */
+    box-sizing: border-box;
+    margin: 0; /* Enlève les marges qui perturbaient la grille */
+}
+
+.articles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colonnes */
+    gap: 20px;
 }
 
 .btn-order {
@@ -53,4 +59,34 @@
   transform: translateX(-50%);
   font-family: 'Arial', sans-serif;
   margin: 0;
+}
+
+.content-wrapper {
+  display: flex;
+  gap: 30px; /* Espace entre la grille de plats et le panier */
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.cart-container {
+    flex: 1; /* Prend 1/4 de la largeur */
+    background: #f9f9f9;
+    padding: 20px;
+    border: 2px solid #2c3e50;
+    border-radius: 8px;
+    position: sticky; /* Le panier reste visible au scroll */
+    top: 20px;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+.cart-total {
+    margin-top: 15px;
+    font-size: 1.2em;
+    text-align: right;
 }
