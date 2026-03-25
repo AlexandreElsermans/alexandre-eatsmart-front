@@ -13,6 +13,13 @@ interface Categorie {
   nom: string;
 }
 
+interface InsertCommandeDTO {
+  id_commande: number;
+  date_commande: Date;
+  prix_total: number;
+  etat: string;
+}
+
 let appDiv = document.querySelector<HTMLDivElement>("#app"); // Sélection de la div avec l'id "content-wrapper"
 
 function clearPrice(prix: number): number {
@@ -76,6 +83,9 @@ function structurePanier(prix: number = 0): string {
         <div class="cart-total">
           <strong>Total : <span id="total-prix">${clearPrice(prix)}</span>€</strong>
         </div>
+        <div class="validCommande">
+          <button class="buttonCommander" type="submit">Valider commande</button>
+        </div>
     </aside>
     </div>
   `
@@ -109,20 +119,29 @@ if (appDiv) { // Mise en place du header
     });
 }
 
-const allButton = document.querySelectorAll<HTMLButtonElement>(".btn-order"); // Recherche tous les boutons de la page avec la classe btn-order
+const validCommandButton = document.querySelectorAll<HTMLButtonElement>(".buttonCommander");
+const ajoutButton = document.querySelectorAll<HTMLButtonElement>(".btn-order"); // Recherche tous les boutons de la page avec la classe btn-order
 const cartItem = document.querySelector<HTMLDivElement>('#cart-items p'); // Recherche la balise paragraphe dans l'id cart-items
 const cartTotal = document.querySelector("#total-prix"); // Récupère la balise contenant le prix total
 
 let panier: Article[] = [];
 
-allButton.forEach((btn, index) => {
+ajoutButton.forEach((btn, index) => {
   btn.addEventListener('click', () => {
+
     if (cartItem?.innerHTML === "Votre panier est vide") {
       cartItem.innerHTML = ""; // Au premier ajout, suppression du contenu de la balise <p>
     }
+
     const plat = carte[index];
     panier.push(plat);
     cartItem.innerHTML += `<p><strong>${plat.nom}</strong> ${clearPrice(plat.prix)}€</p>`; // Affichage dynamique du contenu du panier
     cartTotal.innerHTML = (parseFloat(cartTotal.innerHTML) + clearPrice(parseFloat(plat.prix))).toString(); // Mise à jour dynamique du prix total 
+  })
+});
+
+validCommandButton.forEach(btn => {
+  btn.addEventListener('click', () => {
+    console.log("Bouton Valider commande cliqué");
   })
 });
