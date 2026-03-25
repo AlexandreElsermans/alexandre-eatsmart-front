@@ -14,7 +14,7 @@ interface Categorie {
 }
 
 interface InsertCommandeDTO {
-  id_commande: number;
+  id_commande: null;
   date_commande: Date;
   prix_total: number;
   etat: string;
@@ -142,6 +142,22 @@ ajoutButton.forEach((btn, index) => {
 
 validCommandButton.forEach(btn => {
   btn.addEventListener('click', () => {
-    console.log("Bouton Valider commande cliqué");
+
+    const maintenant = new Date();
+    const dateMySQL = maintenant.toISOString().slice(0, 19).replace('T', ' ');
+
+    const recupPrice = document.querySelector("#total-prix");
+    const priceToPay: number = parseFloat(recupPrice.innerHTML);
+
+    const etatCommande: string = "En cours";
+
+    const objetTest = {
+      id_commande: null,
+      date_commande: dateMySQL,
+      prix_total: priceToPay,
+      etat: etatCommande,
+    };
+
+    console.log(JSON.stringify(objetTest));
   })
 });
