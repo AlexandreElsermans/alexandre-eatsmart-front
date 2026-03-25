@@ -15,6 +15,11 @@ interface Categorie {
 
 let appDiv = document.querySelector<HTMLDivElement>("#app"); // Sélection de la div avec l'id "content-wrapper"
 
+function clearPrice(prix: number): number {
+  const nb: number = prix;
+  return Math.round(prix * 100) / 100;
+}
+
 async function chargerArticles(): Promise<Article[]> {
   const response = await fetch('http://alexandre-api-eatsmart/articles'); // Appel de l'API pour récupérer les articles
   return await response.json();
@@ -41,7 +46,7 @@ function structureArticles(article: Article): string {
         <section class="article">
           <h3>${article.nom}</h3>
           <p>${article.description}</p>
-          <p><strong>${article.prix}€</strong></p>
+          <p><strong>${clearPrice(article.prix)}€</strong></p>
           <button class="btn-order">Ajouter</button>
           <p><strong>🔥Bon plan</strong></p>
         </section>
@@ -53,7 +58,7 @@ function structureArticles(article: Article): string {
       <section class="article">
         <h3>${article.nom}</h3>
         <p>${article.description}</p>
-        <p><strong>${article.prix}€</strong></p>
+        <p><strong>${clearPrice(article.prix)}€</strong></p>
         <button class="btn-order">Ajouter</button>
       </section>
     </div>
@@ -69,7 +74,7 @@ function structurePanier(prix: number = 0): string {
         </div>
         <hr>
         <div class="cart-total">
-          <strong>Total : <span id="total-prix">${prix}</span>€</strong>
+          <strong>Total : <span id="total-prix">${clearPrice(prix)}</span>€</strong>
         </div>
     </aside>
     </div>
@@ -117,7 +122,7 @@ allButton.forEach((btn, index) => {
     }
     const plat = carte[index];
     panier.push(plat);
-    cartItem.innerHTML += `<p><strong>${plat.nom}</strong> ${plat.prix}€</p>`; // Affichage dynamique du contenu du panier
-    cartTotal.innerHTML = (parseFloat(cartTotal.innerHTML) + parseFloat(plat.prix)).toString(); // Mise à jour dynamique du prix total 
+    cartItem.innerHTML += `<p><strong>${plat.nom}</strong> ${clearPrice(plat.prix)}€</p>`; // Affichage dynamique du contenu du panier
+    cartTotal.innerHTML = (parseFloat(cartTotal.innerHTML) + clearPrice(parseFloat(plat.prix))).toString(); // Mise à jour dynamique du prix total 
   })
 });
