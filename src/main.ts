@@ -14,8 +14,7 @@ interface Categorie {
 }
 
 interface InsertCommandeDTO {
-  id_commande: null;
-  date_commande: Date;
+  date_commande: string;
   prix_total: number;
   etat: string;
 }
@@ -23,8 +22,7 @@ interface InsertCommandeDTO {
 let appDiv = document.querySelector<HTMLDivElement>("#app"); // Sélection de la div avec l'id "content-wrapper"
 
 function clearPrice(prix: number): number {
-  const nb: number = prix;
-  return Math.round(prix * 100) / 100;
+  return (Math.round(prix * 100) / 100);
 }
 
 async function chargerArticles(): Promise<Article[]> {
@@ -35,6 +33,30 @@ async function chargerArticles(): Promise<Article[]> {
 async function chargerCategories(): Promise<Categorie[]> {
   const response = await fetch('http://alexandre-api-eatsmart/categories'); // Appel de l'API pour récupérer les catégories
   return await response.json();
+}
+
+async function envoyerData<T>(commande: T) {
+  try {
+    const envoie = await fetch('http://alexandre-api-eatsmart/commandes/', {
+      method: 'POST',
+      headers: {'Content-Type' : 'application/json'},
+      body: JSON.stringify(commande)
+    });
+
+    
+  const responseText = await envoie.text();
+  console.log("Réponse brute du serveur:", responseText);
+
+    if (envoie.ok) {
+        const result = await envoie.json();
+        console.log('Succès :', result);
+    } else {
+      console.error('Erreur serveur : ', envoie.status);
+    }
+
+  } catch (e) {
+    console.error("Erreur détectée : ", e);
+  }
 }
 
 function structurePages(categorie: Categorie): string {
@@ -142,22 +164,22 @@ ajoutButton.forEach((btn, index) => {
 
 validCommandButton.forEach(btn => {
   btn.addEventListener('click', () => {
-
+    
     const maintenant = new Date();
     const dateMySQL = maintenant.toISOString().slice(0, 19).replace('T', ' ');
 
     const recupPrice = document.querySelector("#total-prix");
-    const priceToPay: number = parseFloat(recupPrice.innerHTML);
+    let priceToPay: number = parseFloat(recupPrice.innerHTML);
+    priceToPay = Math.round(priceToPay * 100) / 100;
 
     const etatCommande: string = "En cours";
 
-    const objetTest = {
-      id_commande: null,
+    const objetTest: InsertCommandeDTO = {
       date_commande: dateMySQL,
       prix_total: priceToPay,
       etat: etatCommande,
     };
-
-    console.log(JSON.stringify(objetTest));
+    
+    envoyerData(objetTest);
   })
 });
