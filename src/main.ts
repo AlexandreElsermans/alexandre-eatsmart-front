@@ -35,6 +35,26 @@ async function chargerCategories(): Promise<Categorie[]> {
   return await response.json();
 }
 
+async function envoyerData<T>(commande: T) {
+  try {
+    const envoie = await fetch('http://alexandre-api-eatsmart/commandes/', {
+      method: 'POST',
+      headers: {'Content-Type' : 'application/json'},
+      body: JSON.stringify(commande)
+    });
+
+    if (envoie.ok) {
+        const result = await envoie.json(); // Récupère la réponse du serveur 
+        console.log('Succès :', result);
+    } else {
+      console.error('Erreur serveur : ', envoie.status);
+    }
+
+  } catch (e) {
+    console.error("Erreur détectée : ", e);
+  }
+}
+
 function structurePages(categorie: Categorie): string {
   return `
     <div class="categorie" id="cat_${categorie.id_categorie}">
@@ -83,6 +103,8 @@ function structurePanier(prix: number = 0): string {
         </div>
         <div class="validCommande">
           <button class="buttonCommander" type="submit">Valider commande</button>
+
+          <button class="viderPanier" type="submit">Vider le panier</button>
         </div>
     </aside>
     </div>
@@ -90,32 +112,10 @@ function structurePanier(prix: number = 0): string {
 }
 
 function clearPanier() {
-  const cartItem = document.querySelector<HTMLDivElement>('#cart-items p'); // Recherche la balise paragraphe dans l'id cart-items
   const cartTotal = document.querySelector("#total-prix"); // Récupère la balise contenant le prix total
 
-  cartItem!.innerHTML = "Votre commande a été envoyé cuisine.";
   cartTotal!.innerHTML = "0";
   panier = [];
-}
-
-async function envoyerData<T>(commande: T) {
-  try {
-    const envoie = await fetch('http://alexandre-api-eatsmart/commandes/', {
-      method: 'POST',
-      headers: {'Content-Type' : 'application/json'},
-      body: JSON.stringify(commande)
-    });
-
-    if (envoie.ok) {
-        const result = await envoie.json(); // Récupère la réponse du serveur 
-        console.log('Succès :', result);
-    } else {
-      console.error('Erreur serveur : ', envoie.status);
-    }
-
-  } catch (e) {
-    console.error("Erreur détectée : ", e);
-  }
 }
 
 const carte = await chargerArticles(); // Récupération des articles depuis l'API
@@ -150,6 +150,7 @@ const validCommandButton = document.querySelectorAll<HTMLButtonElement>(".button
 const ajoutButton = document.querySelectorAll<HTMLButtonElement>(".btn-order"); // Recherche tous les boutons de la page avec la classe btn-order
 const cartItem = document.querySelector<HTMLDivElement>('#cart-items p'); // Recherche la balise paragraphe dans l'id cart-items
 const cartTotal = document.querySelector("#total-prix"); // Récupère la balise contenant le prix total
+const viderPanierButton = document.querySelector(".viderPanier"); // Récupère le bouton pour vider le panier
 
 let panier: Article[] = [];
 
@@ -186,5 +187,11 @@ validCommandButton.forEach(btn => {
     
     envoyerData(objetTest); // Envoie de la commande dans la BDD
     clearPanier(); // Appel de cette fonction pour réinitialiser le panier à son état de base
+    cartItem!.innerHTML = "Votre commande a été envoyé cuisine.";
   });
+});
+
+viderPanierButton?.addEventListener('click', () => {
+  clearPanier(); // Appel de la fonction clearPanier() dès que le bouton "Vider le panier" est cliqué
+  cartItem!.innerHTML = "Votre panier est vide";
 });
