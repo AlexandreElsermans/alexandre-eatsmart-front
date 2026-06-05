@@ -1,0 +1,17 @@
+Bilan annuel 2026 :
+
+SELECT SUM(prix_total) AS ca_2026 
+FROM commande 
+WHERE date_commande LIKE "%2026%";
+
+SELECT COUNT(id_commande) AS nb_commande_2026 
+FROM commande 
+WHERE date_commande LIKE "%2026%";
+
+SELECT article.nom, SUM(assoc_article_commande.quantite_article) AS total
+FROM assoc_article_commande
+JOIN article ON assoc_article_commande.id_article = article.id_article
+JOIN commande ON assoc_article_commande.id_commande = commande.id_commande
+GROUP BY article.id_article, article.nom
+ORDER BY total DESC
+LIMIT 3;
