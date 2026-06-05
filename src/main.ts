@@ -5,6 +5,7 @@ interface Article {
   nom: string;
   prix: number;
   description: string;
+  inclus_menu: string;
   id_categorie: number;
 }
 
@@ -66,10 +67,12 @@ function structurePages(categorie: Categorie): string {
 
 function structureArticles(article: Article): string {
   if (article.prix < 10) {
-    return `
+    if (article.inclus_menu === "midi_soir") {
+      return `
       <div class="carte">
         <section class="article">
           <h3>${article.nom}</h3>
+          <p>Apparition : midi et soir</p>
           <p>${article.description}</p>
           <p><strong>${clearPrice(article.prix)}€</strong></p>
           <button class="btn-order">Ajouter</button>
@@ -77,17 +80,59 @@ function structureArticles(article: Article): string {
         </section>
       </div>
     `
+    } else if (article.inclus_menu === "aucun") {
+      return `
+        <div class="carte">
+          <section class="article">
+            <h3>${article.nom}</h3>
+            <p>${article.description}</p>
+            <p><strong>${clearPrice(article.prix)}€</strong></p>
+            <button class="btn-order">Ajouter</button>
+            <p><strong>🔥Bon plan</strong></p>
+          </section>
+        </div>
+      `
+    } 
+
+    return `
+      <div class="carte">
+        <section class="article">
+          <h3>${article.nom}</h3>
+          <p>Apparition : ${article.inclus_menu}</p>
+          <p>${article.description}</p>
+          <p><strong>${clearPrice(article.prix)}€</strong></p>
+          <button class="btn-order">Ajouter</button>
+          <p><strong>🔥Bon plan</strong></p>
+        </section>
+      </div>
+    `
+  } else if (article.prix >= 10) {
+    if (article.inclus_menu === "aucun") {    
+      return `
+        <div class="carte">
+          <section class="article">
+            <h3>${article.nom}</h3>
+            <p>${article.description}</p>
+            <p><strong>${clearPrice(article.prix)}€</strong></p>
+            <button class="btn-order">Ajouter</button>
+          </section>
+        </div>
+      `
+    }
+    return `
+      <div class="carte">
+        <section class="article">
+          <h3>${article.nom}</h3>
+          <p>Apparition : ${article.inclus_menu}</p>
+          <p>${article.description}</p>
+          <p><strong>${clearPrice(article.prix)}€</strong></p>
+          <button class="btn-order">Ajouter</button>
+        </section>
+      </div>
+    `
   }
-  return `
-    <div class="carte">
-      <section class="article">
-        <h3>${article.nom}</h3>
-        <p>${article.description}</p>
-        <p><strong>${clearPrice(article.prix)}€</strong></p>
-        <button class="btn-order">Ajouter</button>
-      </section>
-    </div>
-  `
+
+  return "Erreur dans la structuration d\'un des articles";
 }
 
 function structurePanier(prix: number = 0): string {
@@ -162,9 +207,10 @@ ajoutButton.forEach((btn, index) => {
     }
 
     const plat: Article = carte[index];
+    const prixPlat: number = plat.prix;
     panier.push(plat);
     cartItem!.innerHTML += `<p><strong>${plat.nom}</strong> ${clearPrice(plat.prix)}€</p>`; // Affichage dynamique du contenu du panier
-    cartTotal!.innerHTML = (parseFloat(cartTotal!.innerHTML) + clearPrice(parseFloat(plat.prix))).toString(); // Mise à jour dynamique du prix total 
+    cartTotal!.innerHTML = (parseFloat(cartTotal!.innerHTML) + clearPrice(prixPlat)).toString(); // Mise à jour dynamique du prix total 
   })
 });
 
